@@ -5,8 +5,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {Store} from '@ngrx/store';
 import {map, Observable} from 'rxjs';
-import * as PhotoActions from '../../store/actions';
-import * as PhotoSelectors from '../../store/selectors';
+import * as ProductActions from '../../store/actions';
+import * as ProductSelectors from '../../store/selectors';
 import {IProduct} from '../../shared/entities/interfaces/product.interface';
 import {RouterLink} from '@angular/router';
 
@@ -15,13 +15,13 @@ import {RouterLink} from '@angular/router';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
   imports: [AsyncPipe, MatCardModule, MatButtonModule, RouterLink],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class ProductsComponent implements OnInit {
   private store = inject(Store);
-  protected products$: Observable<IProduct[]> = this.store.select(PhotoSelectors.selectPhotos);
-  protected productsInCart$: Observable<IProduct[]> = this.store.select(PhotoSelectors.selectFavoritePhotos);
+  protected products$: Observable<IProduct[]> = this.store.select(ProductSelectors.selectProducts);
+  protected productsInCart$: Observable<IProduct[]> = this.store.select(ProductSelectors.selectFavoriteProducts);
   private titleService = inject(Title);
 
   constructor() {
@@ -29,7 +29,7 @@ export class ProductsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(PhotoActions.loadPhotos());
+    this.store.dispatch(ProductActions.loadProducts());
   }
 
   protected favoriteIds$ = this.productsInCart$.pipe(map((favs) => favs.map((f) => f.id)));
@@ -39,7 +39,7 @@ export class ProductsComponent implements OnInit {
   }
 
   protected addToCart(product: IProduct, event: MouseEvent): void {
-    this.store.dispatch(PhotoActions.addToCart({product}));
+    this.store.dispatch(ProductActions.addToCart({product}));
     (event.target as HTMLButtonElement).disabled = true;
   }
 }

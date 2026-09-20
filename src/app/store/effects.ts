@@ -1,29 +1,27 @@
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { PhotoDataService } from '../shared/services/photo-data.service';
-import * as PhotoActions from './actions';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {ProductDataService} from '../shared/services/product-data.service';
+import * as ProductActions from './actions';
+import {catchError, map, mergeMap, of} from 'rxjs';
 
 @Injectable()
-export class PhotoEffects {
+export class ProductEffects {
   constructor(
     private readonly actions$: Actions,
-    private readonly photoService: PhotoDataService
+    private readonly productService: ProductDataService
   ) {}
 
-  loadPhotos$ = createEffect(() =>
+  loadProducts$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(PhotoActions.loadPhotos),
+      ofType(ProductActions.loadProducts),
       mergeMap(() =>
-        this.photoService.getProducts().pipe(
-          map(response =>
-            PhotoActions.loadPhotosSuccess({
-              products: response.products
+        this.productService.getProducts().pipe(
+          map((response) =>
+            ProductActions.loadProductsSuccess({
+              products: response.products,
             })
           ),
-          catchError(error =>
-            of(PhotoActions.loadPhotosFailure({ error }))
-          )
+          catchError((error) => of(ProductActions.loadProductsFailure({error})))
         )
       )
     )

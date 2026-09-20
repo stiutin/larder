@@ -1,6 +1,6 @@
 @if (products$) {
   <div class="products-list">
-    @for (product of products$ | async; track product) {
+    @for (product of products$ | async; track product.id) {
       <mat-card class="product-card" appearance="outlined">
         <mat-card-header>
           <mat-card-title>{{ product.title }}</mat-card-title>

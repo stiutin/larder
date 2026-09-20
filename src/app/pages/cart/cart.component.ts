@@ -2,7 +2,7 @@ import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import * as PhotoSelectors from '../../store/selectors';
+import * as ProductSelectors from '../../store/selectors';
 import {RouterLink} from '@angular/router';
 import {AsyncPipe} from '@angular/common';
 import {IProduct} from '../../shared/entities/interfaces/product.interface';
@@ -16,7 +16,7 @@ import {
   MatCardSubtitle,
   MatCardTitle,
 } from '@angular/material/card';
-import * as PhotoActions from '../../store/actions';
+import * as ProductActions from '../../store/actions';
 
 @Component({
   selector: 'app-cart',
@@ -34,19 +34,19 @@ import * as PhotoActions from '../../store/actions';
     MatCardSubtitle,
     MatCardTitle,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class CartComponent {
   private readonly store = inject(Store);
   private readonly titleService = inject(Title);
-  protected productsInCart$: Observable<IProduct[]> = this.store.select(PhotoSelectors.selectFavoritePhotos);
+  protected productsInCart$: Observable<IProduct[]> = this.store.select(ProductSelectors.selectFavoriteProducts);
 
   constructor() {
     this.titleService.setTitle('Esto App | Cart');
   }
 
   protected removeProduct(productId: number): void {
-    this.store.dispatch(PhotoActions.removeFromCart({productId}));
+    this.store.dispatch(ProductActions.removeFromCart({productId}));
   }
 }

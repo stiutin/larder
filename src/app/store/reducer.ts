@@ -1,35 +1,35 @@
-import { createReducer, on } from '@ngrx/store';
-import * as PhotoActions from './actions';
-import {IProduct} from "../shared/entities/interfaces/product.interface";
+import {createReducer, on} from '@ngrx/store';
+import * as ProductActions from './actions';
+import {IProduct} from '../shared/entities/interfaces/product.interface';
 
-export interface PhotoState {
+export interface ProductState {
   products: IProduct[];
   productsInCart: IProduct[];
-  error: any;
+  error: unknown;
 }
 
-export const initialState: PhotoState = {
+export const initialState: ProductState = {
   products: [],
   productsInCart: [],
-  error: null
+  error: null,
 };
 
-export const photoReducer = createReducer(
+export const productReducer = createReducer(
   initialState,
-  on(PhotoActions.loadPhotosSuccess, (state, { products }) => ({
+  on(ProductActions.loadProductsSuccess, (state, {products}) => ({
     ...state,
-    products
+    products,
   })),
-  on(PhotoActions.loadPhotosFailure, (state, { error }) => ({
+  on(ProductActions.loadProductsFailure, (state, {error}) => ({
     ...state,
-    error
+    error,
   })),
-  on(PhotoActions.addToCart, (state, { product }) => ({
+  on(ProductActions.addToCart, (state, {product}) => ({
     ...state,
-    productsInCart: [...state.productsInCart, product]
+    productsInCart: [...state.productsInCart, product],
   })),
-  on(PhotoActions.removeFromCart, (state, { productId }) => ({
+  on(ProductActions.removeFromCart, (state, {productId}) => ({
     ...state,
-    productsInCart: state.productsInCart.filter(p => p.id !== productId),
+    productsInCart: state.productsInCart.filter((p) => p.id !== productId),
   }))
 );

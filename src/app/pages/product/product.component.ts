@@ -20,7 +20,7 @@ import {IProduct} from '../../shared/entities/interfaces/product.interface';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
   imports: [AsyncPipe, MatCard, MatCardContent, MatCardHeader, MatCardImage, MatCardSubtitle, MatCardTitle],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class ProductComponent implements OnInit {
@@ -36,6 +36,6 @@ export class ProductComponent implements OnInit {
 
   public ngOnInit(): void {
     this.productId = +this.route.snapshot.paramMap.get('id');
-    this.product$ = this.store.select(PhotoSelectors.selectPhotoById(this.productId));
+    this.product$ = this.store.select(PhotoSelectors.selectProductById(this.productId));
   }
 }
