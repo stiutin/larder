@@ -1,25 +1,26 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import {Component, OnInit, inject, ChangeDetectionStrategy} from '@angular/core';
+import {AsyncPipe} from '@angular/common';
+import {ActivatedRoute} from '@angular/router';
+import {Title} from '@angular/platform-browser';
 import {
   MatCard,
   MatCardContent,
   MatCardHeader,
   MatCardImage,
   MatCardSubtitle,
-  MatCardTitle
-} from "@angular/material/card";
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+  MatCardTitle,
+} from '@angular/material/card';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
 import * as PhotoSelectors from '../../store/selectors';
-import {IProduct} from "../../shared/entities/interfaces/product.interface";
+import {IProduct} from '../../shared/entities/interfaces/product.interface';
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
   imports: [AsyncPipe, MatCard, MatCardContent, MatCardHeader, MatCardImage, MatCardSubtitle, MatCardTitle],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 export class ProductComponent implements OnInit {

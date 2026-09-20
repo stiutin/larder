@@ -1,7 +1,7 @@
 import {provideZoneChangeDetection} from '@angular/core';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideRouter} from '@angular/router';
-import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClient, withXhr} from '@angular/common/http';
 import {provideStore} from '@ngrx/store';
 import {provideEffects} from '@ngrx/effects';
 import {AppComponent} from './app/app.component';
@@ -15,6 +15,6 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideStore({photos: photoReducer}),
     provideEffects([PhotoEffects]),
-    provideHttpClient(),
+    provideHttpClient(withXhr()),
   ],
 });
