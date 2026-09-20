@@ -6,7 +6,7 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   imports: [RouterLink, RouterLinkActive],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class HeaderComponent {}

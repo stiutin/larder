@@ -4,7 +4,7 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
   selector: 'app-footer',
   imports: [],
   templateUrl: './footer.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './footer.component.scss',
 })
 export class FooterComponent {}
