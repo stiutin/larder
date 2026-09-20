@@ -1,28 +1,41 @@
-import { Component, inject } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import {Title} from '@angular/platform-browser';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
 import * as PhotoSelectors from '../../store/selectors';
-import { RouterLink } from '@angular/router';
-import {AsyncPipe} from "@angular/common";
-import {IProduct} from "../../shared/entities/interfaces/product.interface";
-import {MatButton} from "@angular/material/button";
+import {RouterLink} from '@angular/router';
+import {AsyncPipe} from '@angular/common';
+import {IProduct} from '../../shared/entities/interfaces/product.interface';
+import {MatButton} from '@angular/material/button';
 import {
   MatCard,
   MatCardActions,
   MatCardContent,
   MatCardHeader,
   MatCardImage,
-  MatCardSubtitle, MatCardTitle
-} from "@angular/material/card";
-import * as PhotoActions from "../../store/actions";
+  MatCardSubtitle,
+  MatCardTitle,
+} from '@angular/material/card';
+import * as PhotoActions from '../../store/actions';
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
-  imports: [RouterLink, AsyncPipe, MatButton, MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardImage, MatCardSubtitle, MatCardTitle],
-  standalone: true
+  imports: [
+    RouterLink,
+    AsyncPipe,
+    MatButton,
+    MatCard,
+    MatCardActions,
+    MatCardContent,
+    MatCardHeader,
+    MatCardImage,
+    MatCardSubtitle,
+    MatCardTitle,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: true,
 })
 export class CartComponent {
   private readonly store = inject(Store);
@@ -34,6 +47,6 @@ export class CartComponent {
   }
 
   protected removeProduct(productId: number): void {
-    this.store.dispatch(PhotoActions.removeFromCart({ productId }));
+    this.store.dispatch(PhotoActions.removeFromCart({productId}));
   }
 }
