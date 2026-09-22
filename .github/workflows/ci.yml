@@ -151,8 +151,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist/larder/browser
-          include-hidden-files: true
-          # Keep .nojekyll: without it Pages runs the site through Jekyll.
+          # Newer versions drop dotfiles by default, and .nojekyll must reach Pages.
           include-hidden-files: true
       - uses: actions/deploy-pages@v4
         id: deployment
