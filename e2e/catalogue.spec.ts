@@ -16,11 +16,25 @@ test.describe('catalogue', () => {
   });
 
   test('a value that lands in the search box before the app is interactive is not lost', async ({page, writes: _}) => {
-    await page.goto('/', {waitUntil: 'domcontentloaded'});
+    // Hold the app's JavaScript back, so the value lands before hydration on any machine — a fast CI runner
+    // would otherwise hydrate first and the test would not be testing anything.
+    let release: () => void = () => undefined;
+    const appScriptHeld = new Promise<void>((resolve) => (release = resolve));
+    await page.route('**/main-*.js', async (route) => {
+      await appScriptHeld;
+      await route.continue();
+    });
+
+    // Not `domcontentloaded`: module scripts are deferred, so that event waits for the held script.
+    await page.goto('/', {waitUntil: 'commit'});
+    const search = page.locator('input[type=search]');
+    await search.waitFor();
+
     // Like browser autofill: the field changes, but no input event is fired that could be replayed.
-    await page.locator('input[type=search]').evaluate((input: HTMLInputElement) => {
+    await search.evaluate((input: HTMLInputElement) => {
       input.value = 'product 1';
     });
+    release();
 
     await expect(page).toHaveURL(/q=product\+1|q=product%201/);
   });
