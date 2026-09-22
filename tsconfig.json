@@ -10,8 +10,12 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": ["node_modules/@types"],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "strictTemplates": true,
@@ -21,5 +25,17 @@
         "optionalChainNotNullable": "warning"
       }
     }
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.e2e.json"
+    }
+  ]
 }

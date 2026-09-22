@@ -1,0 +1,35 @@
+:host {
+  display: block;
+
+  .footer {
+    border-top: 1px solid var(--k-border);
+    color: var(--k-muted);
+    font: var(--mat-sys-body-medium);
+  }
+
+  .footer__inner {
+    margin: 0 auto;
+    max-width: var(--k-page-width);
+    padding: 24px 16px 40px;
+  }
+
+  .footer__inner p {
+    margin: 0 0 8px;
+  }
+
+  .footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 12px 0;
+  }
+
+  .footer__nav a {
+    display: inline-block;
+    min-height: 24px;
+  }
+
+  .footer__meta {
+    font: var(--mat-sys-body-small);
+  }
+}

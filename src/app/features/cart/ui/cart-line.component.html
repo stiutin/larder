@@ -1,0 +1,41 @@
+<article class="line">
+  <img [ngSrc]="item().thumbnail" [priority]="priority()" alt="" class="line__image" width="80" height="80" />
+
+  <div class="line__info">
+    <a [routerLink]="['/product', item().productId]" class="line__title">{{ item().title }}</a>
+    <span class="line__meta">{{ item().category }} · {{ item().unitPrice | currency: 'USD' }} each</span>
+  </div>
+
+  <div [attr.aria-label]="'Quantity: ' + item().title" class="line__quantity" role="group">
+    <button
+      [disabled]="item().quantity <= 1"
+      (click)="decrement.emit(item().productId)"
+      class="line__step"
+      type="button"
+      aria-label="Decrease"
+    >
+      −
+    </button>
+    <span class="line__count" aria-live="polite">{{ item().quantity }}</span>
+    <button
+      [disabled]="atMax()"
+      (click)="increment.emit(item().productId)"
+      class="line__step"
+      type="button"
+      aria-label="Increase"
+    >
+      +
+    </button>
+  </div>
+
+  <strong class="line__total">{{ total() | currency: 'USD' }}</strong>
+
+  <button
+    [attr.aria-label]="'Remove ' + item().title"
+    (click)="remove.emit(item().productId)"
+    class="line__remove"
+    type="button"
+  >
+    Remove
+  </button>
+</article>

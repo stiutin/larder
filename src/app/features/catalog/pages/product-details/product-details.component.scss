@@ -1,0 +1,22 @@
+:host {
+  .product-details {
+    max-width: 520px;
+  }
+
+  .product-details__back {
+    display: inline-block;
+    margin-bottom: 16px;
+    min-height: 44px;
+    padding: 12px 0;
+  }
+
+  .product-details__message {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+  }
+}

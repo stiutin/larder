@@ -1,0 +1,44 @@
+<form (submit)="$event.preventDefault()" class="toolbar" role="search">
+  <label class="toolbar__field toolbar__field--search">
+    <span class="toolbar__label">Search</span>
+    <input
+      #searchField
+      [attr.value]="query().search"
+      (input)="onSearchInput($event)"
+      class="control"
+      type="search"
+      placeholder="e.g. phone"
+      autocomplete="off"
+    />
+  </label>
+
+  <label class="toolbar__field">
+    <span class="toolbar__label">Category</span>
+    <select
+      #categoryField
+      [disabled]="!!query().search || !categories().length"
+      (change)="onCategoryChange($event)"
+      class="control"
+    >
+      <option [attr.selected]="query().category ? null : ''" value="">All categories</option>
+      @for (category of categories(); track category.slug) {
+        <option [value]="category.slug" [attr.selected]="category.slug === query().category ? '' : null">
+          {{ category.name }}
+        </option>
+      }
+    </select>
+  </label>
+
+  <label class="toolbar__field">
+    <span class="toolbar__label">Sort by</span>
+    <select #sortField (change)="onSortChange($event)" class="control">
+      @for (sort of sorts; track sort) {
+        <option [value]="sort" [attr.selected]="sort === query().sort ? '' : null">{{ sortLabels[sort] }}</option>
+      }
+    </select>
+  </label>
+</form>
+
+@if (query().search) {
+  <p class="toolbar__hint">The category filter is off while searching — the API cannot search within a category.</p>
+}

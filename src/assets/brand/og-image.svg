@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#12100E"/>
+  <g transform="translate(96 150)">
+    <g transform="scale(3.2)">
+      <path d="M0 0h60v18H0z" fill="#D9622B"/>
+      <path d="M0 18q10 13.8 20 0 10 13.8 20 0 10 13.8 20 0z" fill="#D9622B"/>
+    </g>
+  </g>
+  <text x="96" y="420" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="96" font-weight="700" fill="#F5F0EA">Larder</text>
+  <text x="96" y="480" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="34" fill="#A8A099">A catalogue that keeps working offline</text>
+  <g transform="translate(96 522)">
+    <circle cx="10" cy="10" r="7" fill="#D9B44A"/>
+    <text x="30" y="17" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="24" fill="#D9B44A">Angular 22 · zoneless · SSR · offline-first</text>
+  </g>
+</svg>

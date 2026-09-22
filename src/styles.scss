@@ -1,6 +1,204 @@
+@use '@angular/material' as mat;
+@use './styles/theme-colors' as brand;
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-.mat-mdc-card-actions {
-  padding: 16px !important;
+// ── Theme ───────────────────────────────────────────────────────────────
+// M3 palettes generated from the brand colours (ng generate @angular/material:theme-color).
+// `theme-type: color-scheme` emits colours via light-dark(): dark mode is just color-scheme: dark.
+html {
+  color-scheme: light dark;
+
+  @include mat.theme(
+    (
+      color: (
+        primary: brand.$primary-palette,
+        tertiary: brand.$tertiary-palette,
+        theme-type: color-scheme,
+      ),
+      typography: (
+        plain-family: (
+          'Inter Variable',
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif,
+        ),
+        brand-family: (
+          'Inter Variable',
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif,
+        ),
+      ),
+      density: 0,
+    )
+  );
+
+  // Custom tokens on top of the system ones. Contrast of every text/background pair is AA-checked in contrast.spec.ts.
+  --k-border: var(--mat-sys-outline-variant);
+  --k-muted: var(--mat-sys-on-surface-variant);
+  --k-raised: var(--mat-sys-surface-container-low);
+  --k-skeleton: light-dark(rgb(0 0 0 / 7%), rgb(255 255 255 / 8%));
+  --k-offline-bg: light-dark(#8a6d1f, #d9b44a);
+  --k-offline-fg: light-dark(#fff, #12100e);
+  --k-warning-bg: light-dark(#fff4e0, #3a2e12);
+  --k-warning-border: light-dark(#e0b35a, #8a6d1f);
+  --k-radius: 16px;
+  --k-page-width: 1120px;
+}
+
+// The manual toggle overrides the system theme. An inline script in index.html sets the attribute before first paint.
+html[data-theme='light'] {
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+// ── Base ────────────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-large);
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--mat-sys-headline-small-font);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+a {
+  color: var(--mat-sys-primary);
+}
+
+// ── Accessibility────────────────────────────────────────────────────────
+:focus-visible {
+  border-radius: 4px;
+  outline: 3px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  background: var(--mat-sys-primary);
+  border-radius: 8px;
+  color: var(--mat-sys-on-primary);
+  left: 16px;
+  padding: 12px 16px;
+  position: absolute;
+  text-decoration: none;
+  top: -100px;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+.visually-hidden {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+// ── Layout ──────────────────────────────────────────────────────────────
+.page {
+  margin: 0 auto;
+  max-width: var(--k-page-width);
+  padding: 32px 16px 80px;
+}
+
+.page__title {
+  font: var(--mat-sys-headline-medium);
+  margin-bottom: 8px;
+}
+
+.muted {
+  color: var(--k-muted);
+}
+
+// Shared form controls so native select/input look like part of the theme.
+.control {
+  appearance: none;
+  background: var(--k-raised);
+
+  // Border uses outline, not outline-variant: WCAG 1.4.11 requires 3:1 for control boundaries.
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 12px;
+  color: inherit;
+  font: inherit;
+  min-height: 48px;
+  padding: 0 14px;
+  width: 100%;
+}
+
+select.control {
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentcolor 50%),
+    linear-gradient(135deg, currentcolor 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 50%,
+    calc(100% - 14px) 50%;
+  background-repeat: no-repeat;
+  background-size: 6px 6px;
+  padding-right: 40px;
+}
+
+.control:disabled {
+  opacity: 0.5;
+}
+
+// ── Motion ──────────────────────────────────────────────────────────────
+@keyframes k-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes k-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }

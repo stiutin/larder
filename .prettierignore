@@ -1,6 +1,6 @@
 **/node_modules
-**/libs
-**/bower_components
 **/dist
-/public
+**/coverage
+.angular
+.lighthouseci
 *.min.js

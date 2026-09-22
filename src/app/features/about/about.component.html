@@ -1,0 +1,62 @@
+<article class="page about">
+  <header class="about__hero">
+    <p class="eyebrow">About {{ appName }}</p>
+    <h1 class="about__title">A pantry for the moments when the network runs dry</h1>
+    <p class="about__lead">
+      A larder is where you keep supplies for the days you cannot get to the shop. {{ appName }} does the same for a
+      product catalogue: everything you have browsed stays on your device, and your cart keeps working in a tunnel, on a
+      plane or on a patchy café Wi-Fi.
+    </p>
+    <div class="about__actions">
+      <a mat-flat-button routerLink="/">Browse the catalogue</a>
+      <a mat-stroked-button routerLink="/contact">Get in touch</a>
+    </div>
+  </header>
+
+  <section class="about__section" aria-labelledby="principles-title">
+    <h2 id="principles-title" class="about__heading">What we care about</h2>
+    <ul class="principles" role="list">
+      @for (principle of principles; track principle.title) {
+        <li class="principle">
+          <span class="principle__icon" aria-hidden="true">{{ principle.icon }}</span>
+          <h3 class="principle__title">{{ principle.title }}</h3>
+          <p class="principle__text">{{ principle.text }}</p>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="about__section" aria-labelledby="how-title">
+    <h2 id="how-title" class="about__heading">How it works</h2>
+    <ol class="steps">
+      @for (step of steps; track step.title; let index = $index) {
+        <li class="step">
+          <span class="step__number" aria-hidden="true">{{ index + 1 }}</span>
+          <div>
+            <h3 class="step__title">{{ step.title }}</h3>
+            <p class="step__text">{{ step.text }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <section class="about__section about__split" aria-labelledby="stack-title">
+    <div>
+      <h2 id="stack-title" class="about__heading">Under the hood</h2>
+      <ul class="chips" role="list">
+        @for (item of stack; track item) {
+          <li class="chip">{{ item }}</li>
+        }
+      </ul>
+    </div>
+    <aside class="note" aria-label="Honest note">
+      <h2 class="note__title">An honest note</h2>
+      <p>
+        {{ appName }} is a portfolio project. Product data and images come from
+        <a href="https://dummyjson.com" rel="noopener" target="_blank">dummyjson.com</a>, nothing is really sold, and no
+        payments are taken. The offline machinery, however, is completely real.
+      </p>
+    </aside>
+  </section>
+</article>

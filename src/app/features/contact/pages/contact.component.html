@@ -1,0 +1,149 @@
+<article class="page contact">
+  <header class="contact__intro">
+    <p class="eyebrow">Contact</p>
+    <h1 class="contact__title">Say hello</h1>
+    <p class="contact__lead">
+      Questions, ideas or a bug you spotted — write to us. The form works even without a connection.
+    </p>
+  </header>
+
+  <div class="contact__layout">
+    <section class="contact__card" aria-labelledby="form-title">
+      <h2 id="form-title" class="visually-hidden">Contact form</h2>
+
+      <div class="contact__status" aria-live="polite" role="status">
+        @switch (state()) {
+          @case ('sent') {
+            <div class="result result--sent">
+              <p class="result__title">Thanks — your message is on its way.</p>
+              <p>
+                It reached our demo endpoint. Nobody reads it yet — the real inbox arrives with the Nest.js backend.
+              </p>
+              <button (click)="startOver()" mat-stroked-button type="button">Write another message</button>
+            </div>
+          }
+          @case ('queued') {
+            <div class="result result--queued">
+              <p class="result__title">Saved on this device.</p>
+              <p>You seem to be offline. We will send your message automatically once the connection is back.</p>
+              <button (click)="startOver()" mat-stroked-button type="button">Write another message</button>
+            </div>
+          }
+          @case ('error') {
+            <p class="result result--error">Something went wrong. Your text is still in the form — please try again.</p>
+          }
+        }
+      </div>
+
+      @if (state() !== 'sent' && state() !== 'queued') {
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form" novalidate>
+          <div class="form__row">
+            <label class="form__field">
+              <span class="form__label">Name</span>
+              <input
+                [attr.aria-invalid]="showError('name')"
+                [attr.aria-describedby]="showError('name') ? 'name-error' : null"
+                [attr.readonly]="interactive() ? null : ''"
+                class="control"
+                autocomplete="name"
+                formControlName="name"
+              />
+              @if (showError('name')) {
+                <span id="name-error" class="form__error">Please tell us your name.</span>
+              }
+            </label>
+
+            <label class="form__field">
+              <span class="form__label">Email</span>
+              <input
+                [attr.aria-invalid]="showError('email')"
+                [attr.aria-describedby]="showError('email') ? 'email-error' : null"
+                [attr.readonly]="interactive() ? null : ''"
+                class="control"
+                type="email"
+                autocomplete="email"
+                formControlName="email"
+              />
+              @if (showError('email')) {
+                <span id="email-error" class="form__error">Enter an email address like name&#64;example.com.</span>
+              }
+            </label>
+          </div>
+
+          <label class="form__field">
+            <span class="form__label">Topic</span>
+            <select [attr.disabled]="interactive() ? null : ''" class="control" formControlName="topic">
+              @for (topic of topics; track topic) {
+                <option [value]="topic">{{ topicLabels[topic] }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="form__field">
+            <span class="form__label">Message</span>
+            <textarea
+              [attr.maxlength]="messageMax"
+              [attr.aria-invalid]="showError('message')"
+              [attr.readonly]="interactive() ? null : ''"
+              class="control form__textarea"
+              rows="6"
+              formControlName="message"
+              aria-describedby="message-hint"
+            ></textarea>
+            <span id="message-hint" class="form__hint">
+              @if (showError('message')) {
+                <span class="form__error">Please write at least {{ messageMin }} characters.</span>
+              } @else {
+                <span>At least {{ messageMin }} characters.</span>
+              }
+              <span class="form__counter">{{ remaining() }} left</span>
+            </span>
+          </label>
+
+          <button
+            [disabled]="!interactive() || state() === 'sending'"
+            class="form__submit"
+            mat-flat-button
+            type="submit"
+          >
+            {{ state() === 'sending' ? 'Sending…' : 'Send message' }}
+          </button>
+        </form>
+      }
+    </section>
+
+    <aside class="contact__aside" aria-label="Other ways to reach us">
+      <div class="info">
+        <h2 class="info__title">Other ways to reach us</h2>
+        <dl class="info__list">
+          <dt>GitHub</dt>
+          <dd>
+            <a [href]="githubUrl" rel="noopener" target="_blank">{{ githubHandle }}</a>
+          </dd>
+          <dt>Bugs and ideas</dt>
+          <dd>Open an issue in the project repository — that is the fastest way to reach the author.</dd>
+          <dt>Replies</dt>
+          <dd>The form is a demo: messages reach a mock endpoint and nobody reads them yet.</dd>
+        </dl>
+      </div>
+
+      <div class="offline-tip">
+        <span class="offline-tip__icon" aria-hidden="true">⌁</span>
+        <p>
+          <strong>No signal?</strong> Send anyway. {{ appName }} keeps your message on this device and delivers it when
+          you are back online.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title" class="faq__title">Frequently asked</h2>
+    @for (faq of faqs; track faq.question) {
+      <details class="faq__item">
+        <summary class="faq__question">{{ faq.question }}</summary>
+        <p class="faq__answer">{{ faq.answer }}</p>
+      </details>
+    }
+  </section>
+</article>

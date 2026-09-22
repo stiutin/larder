@@ -1,0 +1,23 @@
+:host {
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+
+  .badge {
+    background: var(--mat-sys-primary);
+    border-radius: 999px;
+    color: var(--mat-sys-on-primary);
+    font: var(--mat-sys-label-medium);
+    font-variant-numeric: tabular-nums;
+    min-width: 22px;
+    padding: 2px 7px;
+    text-align: center;
+  }
+
+  .badge__pending {
+    background: var(--k-offline-bg);
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+  }
+}

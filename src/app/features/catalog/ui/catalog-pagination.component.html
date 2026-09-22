@@ -1,0 +1,7 @@
+@if (pageCount() > 1) {
+  <nav class="pagination" aria-label="Catalogue pages">
+    <button [disabled]="page() <= 1" (click)="pageChange.emit(page() - 1)" mat-stroked-button>Previous</button>
+    <span class="pagination__status" aria-live="polite">Page {{ page() }} of {{ pageCount() }}</span>
+    <button [disabled]="page() >= pageCount()" (click)="pageChange.emit(page() + 1)" mat-stroked-button>Next</button>
+  </nav>
+}

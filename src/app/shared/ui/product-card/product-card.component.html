@@ -1,0 +1,50 @@
+<mat-card class="product-card" appearance="outlined">
+  <div class="product-card__media">
+    <img
+      [ngSrc]="product().thumbnail"
+      [alt]="product().title"
+      [priority]="priority()"
+      class="product-card__image"
+      width="300"
+      height="300"
+    />
+    @if (product().discountPercentage >= 1) {
+      <span class="product-card__discount">−{{ product().discountPercentage | number: '1.0-0' }}%</span>
+    }
+  </div>
+  <mat-card-content class="product-card__body">
+    <p class="product-card__category">{{ product().category }}</p>
+    @if (variant() === 'page') {
+      <h1 class="product-card__title product-card__title--page">{{ product().title }}</h1>
+    } @else {
+      <h2 class="product-card__title">{{ product().title }}</h2>
+    }
+    <p class="product-card__description">{{ product().description }}</p>
+    <p class="product-card__meta">
+      <strong class="product-card__price">{{ product().price | currency: 'USD' }}</strong>
+      <span class="product-card__rating">
+        <span aria-hidden="true">★</span>
+        <span class="visually-hidden">Rating</span>
+        {{ product().rating | number: '1.1-1' }}
+      </span>
+    </p>
+  </mat-card-content>
+  <mat-card-actions class="product-card__actions">
+    @switch (action()) {
+      @case ('add') {
+        <button (click)="added.emit(product())" mat-flat-button>
+          {{ inCart() ? 'Add another' : 'Add to cart' }}
+          <span class="visually-hidden">: {{ product().title }}</span>
+        </button>
+      }
+      @case ('remove') {
+        <button (click)="removed.emit(product().id)" mat-flat-button>Remove</button>
+      }
+    }
+    @if (variant() === 'list') {
+      <a [routerLink]="['/product', product().id]" mat-button>
+        Details<span class="visually-hidden">: {{ product().title }}</span>
+      </a>
+    }
+  </mat-card-actions>
+</mat-card>

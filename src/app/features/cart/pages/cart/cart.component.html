@@ -1,0 +1,92 @@
+<section class="page cart" aria-labelledby="cart-title">
+  <header class="cart__header">
+    <h1 id="cart-title" class="page__title">Cart</h1>
+    <p class="cart__sync" aria-live="polite">
+      @switch (sync.status()) {
+        @case ('syncing') {
+          Syncing…
+        }
+        @case ('synced') {
+          Synced at {{ sync.lastSyncedAt() | date: 'HH:mm' }}
+        }
+        @case ('pending') {
+          {{
+            online()
+              ? 'Sending changes…'
+              : 'You are offline. Changes are saved on this device and will be sent once you are back online.'
+          }}
+        }
+        @case ('error') {
+          Could not sync. Changes are saved on this device; retrying automatically.
+        }
+        @case ('rejected') {
+          The server did not accept the last change. Your cart is saved on this device.
+        }
+      }
+    </p>
+  </header>
+
+  @if (cart.conflicts().length) {
+    <div class="cart__conflicts" role="alert">
+      <h2 class="cart__conflicts-title">Something changed while you were away</h2>
+      @for (conflict of cart.conflicts(); track conflict.productId) {
+        <div class="cart__conflict">
+          @if (conflict.kind === 'price-changed') {
+            <span>
+              <strong>{{ conflict.title }}</strong
+              >: {{ conflict.oldPrice | currency: 'USD' }} → {{ conflict.newPrice | currency: 'USD' }}
+            </span>
+            <span class="cart__conflict-actions">
+              <button (click)="cart.acceptNewPrice(conflict.productId)" mat-stroked-button>Accept new price</button>
+              <button (click)="cart.remove(conflict.productId)" mat-button>Remove</button>
+            </span>
+          } @else {
+            <span
+              ><strong>{{ conflict.title }}</strong> is no longer available.</span
+            >
+            <span class="cart__conflict-actions">
+              <button (click)="cart.remove(conflict.productId)" mat-stroked-button>Remove</button>
+            </span>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (!cart.hydrated()) {
+    <p class="cart__empty">Loading your cart…</p>
+  } @else if (cart.isEmpty()) {
+    <div class="cart__empty">
+      <p>Your cart is empty.</p>
+      <a mat-flat-button routerLink="/">Back to catalogue</a>
+    </div>
+  } @else {
+    <div class="cart__layout">
+      <div class="cart__lines">
+        @for (item of cart.items(); track item.productId; let first = $first) {
+          <app-cart-line
+            [priority]="first"
+            [item]="item"
+            (increment)="cart.increment($event)"
+            (decrement)="cart.decrement($event)"
+            (remove)="cart.remove($event)"
+          />
+        }
+      </div>
+
+      <aside class="cart__summary" aria-label="Order summary">
+        <dl class="cart__totals">
+          <dt>Items</dt>
+          <dd>{{ cart.totals().count }}</dd>
+          <dt>Subtotal</dt>
+          <dd>{{ cart.totals().subtotal | currency: 'USD' }}</dd>
+          <dt>Discount</dt>
+          <dd>−{{ cart.totals().discount | currency: 'USD' }}</dd>
+          <dt class="cart__grand">Total</dt>
+          <dd class="cart__grand">{{ cart.totals().total | currency: 'USD' }}</dd>
+        </dl>
+        <p class="cart__note">Prices are locked in when an item is added to the cart.</p>
+      </aside>
+    </div>
+  }
+</section>

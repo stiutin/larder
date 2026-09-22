@@ -1,0 +1,36 @@
+:host {
+  display: block;
+
+  .toolbar {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .toolbar__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .toolbar__label {
+    color: var(--k-muted);
+    font: var(--mat-sys-label-large);
+  }
+
+  .toolbar__hint {
+    color: var(--k-muted);
+    font: var(--mat-sys-body-small);
+    margin: 8px 0 0;
+  }
+}
+
+@media (width <= 720px) {
+  :host .toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  :host .toolbar__field--search {
+    grid-column: 1 / -1;
+  }
+}

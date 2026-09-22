@@ -1,0 +1,76 @@
+<section class="page catalog" aria-labelledby="catalog-title">
+  <h1 id="catalog-title" class="page__title">Catalogue</h1>
+
+  <app-catalog-toolbar
+    [query]="query()"
+    [categories]="categories()"
+    (searchChange)="onSearch($event)"
+    (categoryChange)="onCategory($event)"
+    (sortChange)="onSort($event)"
+  />
+
+  <p class="catalog__status" aria-live="polite">
+    @switch (status()) {
+      @case ('revalidating') {
+        Showing saved data, refreshing…
+      }
+      @case ('stale') {
+        {{ online() ? 'The server is not responding.' : 'You are offline.' }}
+        Data as of {{ fetchedAt() | date: 'HH:mm, d MMM' }}.
+        <button (click)="retry()" class="catalog__link" type="button">Refresh</button>
+      }
+      @case ('loaded') {
+        @if (total()) {
+          {{ total() }} products found
+        }
+      }
+    }
+  </p>
+
+  @if (status() === 'error' && error(); as apiError) {
+    <div class="catalog__message">
+      @if (apiError.kind === 'offline') {
+        <p><strong>You are offline and this page is not cached yet.</strong></p>
+        <p>Open it once you are back online — after that it will work without a connection.</p>
+      } @else {
+        <p>Could not load the catalogue.</p>
+      }
+      @if (apiError.isRetryable) {
+        <button (click)="retry()" mat-flat-button>Try again</button>
+      }
+    </div>
+  } @else if (showSkeleton()) {
+    <div class="catalog__grid" aria-busy="true" aria-label="Loading the catalogue">
+      @for (card of skeletonCards; track card) {
+        <div class="catalog__skeleton" aria-hidden="true"></div>
+      }
+    </div>
+  } @else if (products().length) {
+    <div class="catalog__grid">
+      @for (product of products(); track product.id) {
+        <app-product-card
+          [product]="product"
+          [inCart]="isInCart(product.id)"
+          (added)="addToCart($event)"
+          action="add"
+        />
+      }
+    </div>
+    <app-catalog-pagination [page]="query().page" [pageCount]="pageCount()" (pageChange)="onPage($event)" />
+  } @else {
+    <div class="catalog__message">
+      @if (query().page > 1 && total() > 0) {
+        <p>This page does not exist.</p>
+        <button (click)="onPage(1)" mat-flat-button>Go to the first page</button>
+      } @else if (query().search) {
+        <p>Nothing found for “{{ query().search }}”.</p>
+        <button (click)="resetFilters()" mat-stroked-button>Clear search</button>
+      } @else if (hasFilters()) {
+        <p>This category is empty for now.</p>
+        <button (click)="resetFilters()" mat-stroked-button>All categories</button>
+      } @else {
+        <p>The catalogue is empty.</p>
+      }
+    </div>
+  }
+</section>

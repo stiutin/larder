@@ -1,0 +1,18 @@
+:host {
+  .not-found {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+  }
+
+  .not-found__code {
+    color: var(--mat-sys-primary);
+    font: var(--mat-sys-display-large);
+    font-weight: 800;
+    margin: 0;
+  }
+}

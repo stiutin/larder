@@ -1,0 +1,23 @@
+<div class="page product-details">
+  <a class="product-details__back" routerLink="/">← Back to catalogue</a>
+  @if (product(); as loadedProduct) {
+    <app-product-card
+      [product]="loadedProduct"
+      [inCart]="inCart()"
+      [priority]="true"
+      (added)="addToCart($event)"
+      variant="page"
+      action="add"
+    />
+  } @else {
+    <div class="product-details__message">
+      @if (online()) {
+        <h1 class="page__title">Product not found</h1>
+      } @else {
+        <h1 class="page__title">You are offline and have not opened this product before</h1>
+        <p class="muted">It becomes available offline after the first visit.</p>
+      }
+      <a mat-flat-button routerLink="/">Back to catalogue</a>
+    </div>
+  }
+</div>

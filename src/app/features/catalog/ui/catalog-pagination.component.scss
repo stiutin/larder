@@ -1,0 +1,14 @@
+:host {
+  .pagination {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .pagination__status {
+    color: var(--k-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}

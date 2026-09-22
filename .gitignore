@@ -1,51 +1,31 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# compiled output
-/dist
-/.angular/cache
-/tmp
-/out-tsc
-# Only exists if Bazel was run
-/bazel-out
-/src/assets/i18n/export*.csv
-
-# dependencies
+# Dependencies and build output
 /node_modules
+/dist
+/out-tsc
+/tmp
 
-# profiling files
-chrome-profiler-events*.json
-speed-measure-plugin*.json
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-.env
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
-
-# misc
-/.sass-cache
-/connect.lock
+# Angular and tool caches
+/.angular
+/.lighthouseci
 /coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
+/playwright-report
+/test-results
+/blob-report
+/playwright/.cache
 
-# System Files
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.sublime-workspace
 .DS_Store
 Thumbs.db
 
-#figma-export-icons
-icons-config.json
+# Local environment
+.env
+.env.*

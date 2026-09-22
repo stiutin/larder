@@ -10,7 +10,9 @@ const unusedImports = require('eslint-plugin-unused-imports');
 const simpleImportSort = require('eslint-plugin-simple-import-sort');
 const noUnsanitized = require('eslint-plugin-no-unsanitized');
 
-module.exports = async (angularComponentPrefixes = []) => {
+const ANGULAR_COMPONENT_PREFIXES = ['app'];
+
+module.exports = (async () => {
   const eslintPluginStylistic = (await import('@stylistic/eslint-plugin')).default;
 
   return tsEslint.config(
@@ -19,7 +21,6 @@ module.exports = async (angularComponentPrefixes = []) => {
       languageOptions: {
         parserOptions: {
           projectService: true,
-          project: ['./tsconfig.json'],
         },
       },
       extends: [
@@ -63,7 +64,7 @@ module.exports = async (angularComponentPrefixes = []) => {
           'error',
           {
             type: 'element',
-            prefix: angularComponentPrefixes,
+            prefix: ANGULAR_COMPONENT_PREFIXES,
             style: 'kebab-case',
           },
         ],
@@ -71,7 +72,7 @@ module.exports = async (angularComponentPrefixes = []) => {
           'error',
           {
             type: 'attribute',
-            prefix: angularComponentPrefixes,
+            prefix: ANGULAR_COMPONENT_PREFIXES,
             style: 'camelCase',
           },
         ],
@@ -154,9 +155,14 @@ module.exports = async (angularComponentPrefixes = []) => {
           'error',
           {
             selector: 'objectLiteralProperty',
+            // SignalStore marks private members with a leading underscore (`_loadPages`).
+            leadingUnderscore: 'allow',
             format: ['UPPER_CASE', 'camelCase'],
             filter: {
-              regex: '^(\\[[^\\]]+\\]|\\([^\\)]+\\)|ngsw-bypass|X-Requested-With|download-filename|_method)$',
+              // The last two alternatives: NgRx createActionGroup events ('Load products success')
+              // and kebab-case URL values ('price-asc'). These are data, not identifiers.
+              regex:
+                '^(\\[[^\\]]+\\]|\\([^\\)]+\\)|ngsw-bypass|X-Requested-With|download-filename|_method|[A-Z][A-Za-z0-9]*( [A-Za-z0-9]+)+|[a-z][a-z0-9]*(-[a-z0-9]+)+)$',
               match: false,
             },
           },
@@ -323,8 +329,6 @@ module.exports = async (angularComponentPrefixes = []) => {
         '@angular-eslint/template/prefer-control-flow': ['error'],
         '@angular-eslint/template/prefer-self-closing-tags': ['error'],
         '@angular-eslint/template/prefer-ngsrc': ['error'],
-        '@angular-eslint/template/click-events-have-key-events': 'off',
-        '@angular-eslint/template/interactive-supports-focus': 'off',
         '@angular-eslint/template/attributes-order': [
           'error',
           {
@@ -359,15 +363,16 @@ module.exports = async (angularComponentPrefixes = []) => {
         '@typescript-eslint/no-magic-numbers': 'off',
       },
     },
+    // Specs: the Service Worker spec hands real globals (Date, Promise, Error) to a VM context, and test doubles
+    // implement only the async methods a spec needs. Everything else — including type-aware rules — stays strict.
     {
-      files: [
-        '**/figma-icons.ts',
-        '**/translations.enums.ts',
-        '**/lang.ts',
-      ],
+      files: ['**/*.spec.ts', 'src/testing/**/*.ts'],
       rules: {
-        'max-lines': 'off',
+        '@typescript-eslint/naming-convention': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/require-await': 'off',
+        'rxjs/finnish': 'off',
       },
-    },
+    }
   );
-};
+})();
