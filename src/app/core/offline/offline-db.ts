@@ -3,10 +3,6 @@ import {DBSchema, IDBPDatabase, openDB} from 'idb';
 import {CartItem} from '../../shared/model/cart.model';
 import {Category, Product} from '../../shared/model/product.model';
 
-/**
- * IndexedDB schema. IMPORTANT: the database name, version and stores are duplicated in `src/sw-sync.js`,
- * because the Service Worker does not go through the bundler. Change one — change both.
- */
 export const OFFLINE_DB_NAME = 'larder-offline';
 export const OFFLINE_DB_VERSION = 1;
 
@@ -46,7 +42,6 @@ let connection: Promise<OfflineDb> | null = null;
 
 export function openOfflineDb(): Promise<OfflineDb> {
   connection ??= openDB<OfflineSchema>(OFFLINE_DB_NAME, OFFLINE_DB_VERSION, {
-    // Another tab (or a newer app version) wants to upgrade or delete the database: step aside instead of blocking it.
     blocking(_currentVersion, _blockedVersion, event) {
       (event.target as IDBDatabase).close();
       connection = null;
@@ -68,7 +63,6 @@ export function isOfflineDbSupported(): boolean {
   return typeof indexedDB !== 'undefined';
 }
 
-/** Closes and forgets the shared connection. Used by specs to start every test from an empty database. */
 export async function resetOfflineDbConnection(): Promise<void> {
   if (connection) {
     (await connection).close();

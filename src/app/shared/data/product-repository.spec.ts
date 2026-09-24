@@ -21,7 +21,7 @@ const page = (...ids: number[]): Observable<CatalogPage> =>
   of({products: ids.map((id) => product(id)), total: ids.length});
 const offline = (): Observable<never> => throwError(() => new ApiError('offline', 'offline'));
 
-describe('ProductRepository — stale-while-revalidate over IndexedDB', () => {
+describe('ProductRepository - stale-while-revalidate over IndexedDB', () => {
   beforeEach(resetOfflineDb);
 
   it('first visit: network only, and the page is written to the cache', async () => {

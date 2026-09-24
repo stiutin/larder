@@ -22,16 +22,8 @@
             },
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              "src/manifest.webmanifest",
-              "src/sw-sync.js"
-            ],
-            "styles": [
-              "node_modules/@fontsource-variable/inter/index.css",
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets", "src/manifest.webmanifest", "src/sw-sync.js"],
+            "styles": ["node_modules/@fontsource-variable/inter/index.css", "src/styles.scss"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -99,13 +91,9 @@
             "tsConfig": "tsconfig.spec.json",
             "runner": "vitest",
             "buildTarget": "larder:build:development",
-            "include": [
-              "src/**/*.spec.ts"
-            ],
+            "include": ["src/**/*.spec.ts"],
             "providersFile": "src/test-providers.ts",
-            "setupFiles": [
-              "src/test-setup.ts"
-            ],
+            "setupFiles": ["src/test-setup.ts"],
             "coverageExclude": [
               "src/**/*.spec.ts",
               "src/app/app.config.server.ts",
@@ -119,27 +107,20 @@
               "functions": 78,
               "lines": 80
             },
-            "coverageInclude": [
-              "src/app/**/*.ts"
-            ]
+            "coverageInclude": ["src/app/**/*.ts"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
   },
   "cli": {
-    "schematicCollections": [
-      "angular-eslint"
-    ]
+    "schematicCollections": ["angular-eslint"]
   },
   "schematics": {
     "@schematics/angular:component": {

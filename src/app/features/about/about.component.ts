@@ -15,7 +15,6 @@ interface Step {
   title: string;
 }
 
-/** Static content, prerendered at build time (SSG). No data, no state — only markup and styles. */
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
@@ -34,7 +33,7 @@ export class AboutComponent {
     },
     {
       icon: '◷',
-      text: 'When you are looking at saved data, we say so — with the exact time it was fetched. No pretending.',
+      text: 'When you are looking at saved data, we say so - with the exact time it was fetched. No pretending.',
       title: 'Honest about freshness',
     },
     {

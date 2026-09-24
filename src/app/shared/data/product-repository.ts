@@ -19,12 +19,6 @@ function toApiError(error: unknown): ApiError {
   return error instanceof ApiError ? error : new ApiError('client', String(error));
 }
 
-/**
- * Stale-while-revalidate on top of the API and IndexedDB.
- *
- * Cache first (instant, even offline), then network. `concat` guarantees the order:
- * fresh data is never overwritten by stale data, even if the network answers faster than the disk.
- */
 @Injectable({providedIn: 'root'})
 export class ProductRepository {
   private readonly api = inject(ProductApiService);
@@ -51,7 +45,6 @@ export class ProductRepository {
           );
         }),
         catchError((error: unknown) =>
-          // Cache is already on screen — a network error must not remove it.
           servedFromCache
             ? of<CatalogPageEvent>({error: toApiError(error), type: 'revalidate-failed'})
             : throwError(() => toApiError(error))
@@ -62,7 +55,6 @@ export class ProductRepository {
     });
   }
 
-  /** For the product page: cache first, because even a stale product beats an empty page offline. */
   public getProduct(id: number): Observable<Product | null> {
     return from(this.cache.getProduct(id)).pipe(
       switchMap((cached) =>
@@ -76,10 +68,6 @@ export class ProductRepository {
     );
   }
 
-  /**
-   * Network only — for cart reconciliation. `null` means the product is gone (404),
-   * `undefined` means the check failed (offline, 500) and no decision can be made.
-   */
   public getFreshProduct(id: number): Observable<Product | null | undefined> {
     return this.api.getProduct(id).pipe(
       tap((product) => void this.cache.putProduct(product)),

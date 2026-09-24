@@ -1,6 +1,7 @@
-import {test as base, expect, Request} from '@playwright/test';
+import {expect, Request, test as base} from '@playwright/test';
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore — plain ESM helper shared with the SSR tests
+// @ts-ignore - plain ESM helper shared with the SSR tests
 import {handle} from '../tests/mock-api/handler.mjs';
 
 const PIXEL = Buffer.from(
@@ -14,18 +15,12 @@ interface Network {
 }
 
 interface Fixtures {
-  /** Offline emulation that also stops the mock routes from answering. */
   network: Network;
-  /** Every write request the browser sent to the API during the test. */
   writes: Request[];
 }
 
 let offline = false;
 
-/**
- * Browser-side requests to dummyjson are answered by the same mock the SSR server uses,
- * so server-rendered HTML and client revalidation always agree. Product images get a 1×1 PNG.
- */
 export const test = base.extend<Fixtures>({
   writes: async ({page}, use) => {
     const writes: Request[] = [];

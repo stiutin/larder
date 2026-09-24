@@ -18,7 +18,6 @@ export interface ContactMessage {
 
 export type ContactResult = 'queued' | 'sent';
 
-/** Maps the form to the body of the mock endpoint. The future Nest.js API will take `ContactMessage` as is. */
 export function toContactRequestBody(message: ContactMessage): {body: string; title: string; userId: number} {
   return {
     body: message.message.trim(),
@@ -27,11 +26,6 @@ export function toContactRequestBody(message: ContactMessage): {body: string; ti
   };
 }
 
-/**
- * Online: send right away and report "sent".
- * Offline or the request failed: put the message into the same outbox the cart uses and report "queued" —
- * it is delivered automatically when the connection returns, even if the tab is closed (Background Sync).
- */
 @Injectable({providedIn: 'root'})
 export class ContactService {
   private readonly http = inject(HttpClient);

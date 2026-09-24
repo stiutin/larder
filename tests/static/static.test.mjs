@@ -1,7 +1,3 @@
-/**
- * Tests the prerendered site exactly as GitHub Pages serves it (scripts/serve-static.mjs).
- *   npm run test:static        # builds against the mock API first if needed
- */
 import {after, before, test} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
@@ -36,7 +32,6 @@ before(async () => {
 
 after(() => server?.kill());
 
-// Short messages instead of dumping 100 kB of HTML on failure.
 const has = (html, pattern, message) => assert.ok(pattern.test(html), message ?? `expected ${pattern}`);
 const hasNot = (html, pattern, message) => assert.ok(!pattern.test(html), message ?? `did not expect ${pattern}`);
 
@@ -62,7 +57,7 @@ test('catalogue state is handed to the client through TransferState', async () =
   has(state, /"status":"loaded"/);
 });
 
-test('query variants get the same file — the client store follows the URL after hydration', async () => {
+test('query variants get the same file - the client store follows the URL after hydration', async () => {
   const {html, status} = await get('/?page=3&sort=price-desc');
   assert.equal(status, 200);
   has(html, /Test product 1</);
@@ -97,7 +92,7 @@ test('About, Contact and the cart shell are prerendered', async () => {
   }
 });
 
-test('the cart is prerendered as a loading shell — it lives on the device', async () => {
+test('the cart is prerendered as a loading shell - it lives on the device', async () => {
   const {html} = await get('/cart/');
   hasNot(html, /Your cart is empty/, 'the server must not claim the cart is empty');
 });
@@ -110,7 +105,6 @@ test('unknown paths get 404.html: status 404 and the client shell', async () => 
 
 test('Open Graph URLs are absolute when PUBLIC_URL is set at build time', async () => {
   const {html} = await get('/about/');
-  // Tags created at runtime put `content` before `property`, so match either order.
   has(html, /<meta(?=[^>]*property="og:url")(?=[^>]*content="https:\/\/larder\.test\/about")[^>]*>/);
   has(html, /property="og:image" content="https:\/\/larder\.test\/assets\/brand\/og-image\.png"/);
 });
@@ -131,9 +125,6 @@ test('landmarks: skip link, lang, main', async () => {
   has(html, /<main[^>]*id="main"/);
 });
 
-// ── Accessibility: axe-core on the prerendered HTML ──────────────────────
-// jsdom has no layout, so contrast is not checked here — src/styles/contrast.spec.ts covers it,
-// and the Playwright a11y spec runs axe in a real browser in both themes.
 const axeSource = readFileSync(createRequire(import.meta.url).resolve('axe-core'), 'utf8');
 
 async function axe(path) {
@@ -149,7 +140,6 @@ async function axe(path) {
 
 for (const path of ['/', '/product/3/', '/about/', '/contact/', '/cart/']) {
   test(`axe: no violations on ${path}`, async () => {
-    // The array comes from the jsdom realm, so compare the length rather than the structure.
     const violations = await axe(path);
     assert.equal(violations.length, 0, violations.join('\n'));
   });

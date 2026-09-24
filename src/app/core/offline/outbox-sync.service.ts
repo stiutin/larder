@@ -30,10 +30,6 @@ const HTTP_CLIENT_ERROR_MIN = 400;
 const HTTP_SERVER_ERROR_MIN = 500;
 const RETRYABLE_CLIENT_STATUSES = new Set([HTTP_REQUEST_TIMEOUT, HTTP_TOO_EARLY, HTTP_TOO_MANY_REQUESTS]);
 
-/**
- * A 4xx other than timeouts and rate limits: the request itself is wrong and sending it again will not help.
- * Accepts both the domain `ApiError` (after the interceptor) and a raw `HttpErrorResponse`.
- */
 function isPermanentFailure(error: unknown): boolean {
   const status = error instanceof ApiError || error instanceof HttpErrorResponse ? error.status : null;
 
@@ -45,13 +41,6 @@ function isPermanentFailure(error: unknown): boolean {
   );
 }
 
-/**
- * Delivers everything that was queued while offline — cart snapshots, contact messages, anything else.
- *
- * Delivery: immediately when online; otherwise Background Sync in the Service Worker,
- * and where that is missing (Safari, Firefox) a manual retry on the `online` event and on startup.
- * Entries with the same id overwrite each other, so a queue of cart snapshots never grows.
- */
 @Injectable({providedIn: 'root'})
 export class OutboxSyncService {
   public readonly status = signal<OutboxSyncStatus>('idle');
@@ -61,7 +50,6 @@ export class OutboxSyncService {
   private readonly outbox = inject(OutboxService);
   private readonly network = inject(NetworkStatusService);
 
-  /** The running flush, if any. Flushes are serialised: every caller's flush starts after its own enqueue. */
   private currentFlush: Promise<void> | null = null;
 
   constructor() {
@@ -75,7 +63,6 @@ export class OutboxSyncService {
       navigator.serviceWorker.addEventListener('message', (event: MessageEvent<unknown>) => {
         const data = event.data as {at?: number; type?: string} | null;
 
-        // The Service Worker flushed the queue in the background while the tab was closed or asleep.
         if (data?.type === 'outbox-flushed') {
           this.status.set('synced');
           this.lastSyncedAt.set(data.at ?? Date.now());
@@ -84,19 +71,11 @@ export class OutboxSyncService {
     }
   }
 
-  /** Queues a request and tries to deliver it straight away. */
-  /** Stores the request durably and tries to deliver it right away. */
   public async enqueue(request: OutboxRequest): Promise<void> {
     await this.stage(request);
     await this.deliver();
   }
 
-  /**
-   * Stores the request durably without sending it. An entry with the same id replaces the previous one.
-   * Callers that batch changes (the cart) stage every change immediately and call `deliver()` later, debounced:
-   * a closed tab or a reload in between loses nothing — the entry is delivered on the next start.
-   */
-  /** Removes a staged request that no longer needs to be sent. */
   public async unstage(id: string): Promise<void> {
     await this.outbox.delete(id);
     this.status.set(this.lastSyncedAt() ? 'synced' : 'idle');
@@ -107,7 +86,6 @@ export class OutboxSyncService {
     this.status.set('pending');
   }
 
-  /** Sends whatever is queued: now if online, otherwise via Background Sync (or the next `online` event). */
   public async deliver(): Promise<void> {
     if (this.network.online()) {
       await this.flush();
@@ -149,15 +127,12 @@ export class OutboxSyncService {
           this.lastSyncedAt.set(Date.now());
         } catch (error: unknown) {
           if (isPermanentFailure(error)) {
-            // The server understood the request and refused it (400, 404, 422…). Retrying cannot help and would
-            // keep the queue stuck forever, so the entry is dropped and the status says so.
             console.warn('[outbox] request rejected, dropped:', entry.url, error);
             await this.outbox.deleteIfUnchanged(entry);
             rejected = true;
             continue;
           }
 
-          // Not `put`: a newer snapshot may have been queued while this one was in flight.
           await this.outbox.bumpAttemptsIfUnchanged(entry);
           this.status.set('error');
           await this.requestBackgroundSync();
@@ -183,7 +158,7 @@ export class OutboxSyncService {
         await registration.sync.register(OUTBOX_SYNC_TAG);
       }
     } catch {
-      // No SW or no permission — the manual retry on `online` remains.
+      // No SW or no permission - the manual retry on `online` remains.
     }
   }
 }

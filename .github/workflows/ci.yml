@@ -1,10 +1,18 @@
+# CI: quality gates on every push and pull request; deploy to GitHub Pages from the default branch.
+#
+# One-time repository setup:
+#   Settings → Pages → Source: GitHub Actions
+#   Settings → Environments → github-pages → Deployment branches: allow the default branch (master)
 name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [master]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,10 +21,10 @@ concurrency:
 jobs:
   quality:
     name: Lint and types
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -26,18 +34,18 @@ jobs:
       - run: npm run typecheck
 
   unit:
-    name: Unit and component tests
-    runs-on: ubuntu-latest
+    name: Unit tests
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - name: Vitest (coverage thresholds from angular.json)
         run: npm run test:coverage
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage
@@ -45,11 +53,11 @@ jobs:
           if-no-files-found: ignore
 
   build:
-    name: Test build and static-site checks
-    runs-on: ubuntu-latest
+    name: Build
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -61,7 +69,7 @@ jobs:
         run: npm run test:static
         env:
           SKIP_BUILD: '1'
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: test-build
           path: dist/
@@ -69,16 +77,16 @@ jobs:
 
   e2e:
     name: End-to-end (Playwright)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: test-build
           path: dist/
@@ -86,7 +94,7 @@ jobs:
       - run: npm run e2e
         env:
           SKIP_BUILD: '1'
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
@@ -94,23 +102,23 @@ jobs:
 
   lighthouse:
     name: Lighthouse
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: test-build
           path: dist/
       - run: npm run lighthouse
         env:
           SKIP_BUILD: '1'
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lighthouse
@@ -122,7 +130,7 @@ jobs:
     name: Deploy to GitHub Pages
     if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch || github.event_name == 'workflow_dispatch'
     needs: [quality, unit, build, e2e]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pages: write
@@ -135,13 +143,13 @@ jobs:
       # Override with the repository variable PAGES_BASE_HREF, e.g. "/" for a custom domain.
       BASE_HREF: ${{ vars.PAGES_BASE_HREF || (endsWith(github.event.repository.name, '.github.io') && '/' || format('/{0}/', github.event.repository.name)) }}
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         id: pages
       # Prerendered against the real dummyjson; PUBLIC_URL makes Open Graph URLs absolute.
       - run: npm run build
@@ -153,5 +161,5 @@ jobs:
           path: dist/larder/browser
           # Newer versions drop dotfiles by default, and .nojekyll must reach Pages.
           include-hidden-files: true
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         id: deployment

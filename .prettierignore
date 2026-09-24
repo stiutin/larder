@@ -1,6 +1,13 @@
-**/node_modules
-**/dist
-**/coverage
+# Build output and tool caches
+dist
+coverage
+out-tsc
 .angular
 .lighthouseci
+lighthouse-report
+playwright-report
+test-results
+
+# Generated or vendored
+package-lock.json
 *.min.js

@@ -1,8 +1,6 @@
 {
   "extends": "stylelint-config-standard-scss",
-  "plugins": [
-    "stylelint-order"
-  ],
+  "plugins": ["stylelint-order"],
   "rules": {
     "order/properties-alphabetical-order": true,
     "selector-class-pattern": null,
@@ -11,13 +9,9 @@
     "selector-pseudo-element-no-unknown": [
       true,
       {
-        "ignorePseudoElements": [
-          "ng-deep"
-        ]
+        "ignorePseudoElements": ["ng-deep"]
       }
     ]
   },
-  "ignoreFiles": [
-    "src/styles/_theme-colors.scss"
-  ]
+  "ignoreFiles": ["src/styles/_theme-colors.scss"]
 }

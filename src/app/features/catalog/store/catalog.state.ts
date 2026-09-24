@@ -3,12 +3,6 @@ import {DataSource} from '../../../shared/data/product-repository';
 import {CatalogQuery, DEFAULT_CATALOG_QUERY} from '../../../shared/model/catalog-query';
 import {Category} from '../../../shared/model/product.model';
 
-/**
- * `loading`      — nothing on screen yet, waiting.
- * `revalidating` — cached data on screen, a network request is in flight.
- * `stale`        — cached data on screen, the network did not answer.
- * `loaded`       — fresh data on screen.
- */
 export type CatalogStatus = 'error' | 'idle' | 'loaded' | 'loading' | 'revalidating' | 'stale';
 
 export interface CatalogState {

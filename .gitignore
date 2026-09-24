@@ -4,9 +4,10 @@
 /out-tsc
 /tmp
 
-# Angular and tool caches
+# Tool caches and reports
 /.angular
 /.lighthouseci
+/lighthouse-report
 /coverage
 /playwright-report
 /test-results
@@ -29,3 +30,4 @@ Thumbs.db
 # Local environment
 .env
 .env.*
+!.env.example

@@ -11,12 +11,6 @@ export interface CachedCatalogPage {
 
 const CATEGORIES_KEY = 'categories';
 
-/**
- * IndexedDB catalogue cache. Pages store only ids; products are normalised into their own store.
- * The same product on three search pages is stored once.
- *
- * All errors are swallowed: the cache is an optimisation, not a source of truth.
- */
 @Injectable({providedIn: 'root'})
 export class CatalogCache {
   public async getPage(key: string): Promise<CachedCatalogPage | null> {
@@ -34,7 +28,6 @@ export class CatalogCache {
 
       const products = await Promise.all(cached.productIds.map((id) => db.get('products', id)));
 
-      // If even one product is missing the page is incomplete — better to hit the network.
       if (products.some((product) => !product)) {
         return null;
       }
@@ -65,7 +58,7 @@ export class CatalogCache {
         tx.done,
       ]);
     } catch {
-      // Cache write failed — the app carries on, just without offline support for this page.
+      // Cache write failed - the app carries on, just without offline support for this page.
     }
   }
 

@@ -26,8 +26,6 @@ function setup(online: boolean): Setup {
   return {http: TestBed.inject(HttpTestingController), network, sync: TestBed.inject(OutboxSyncService)};
 }
 
-/** Waits until the service has actually issued the request, instead of sleeping for a guessed time. */
-// `match()` would consume the request; `expectOne()` only consumes it once it exists and throws until then.
 const nextRequest = (http: HttpTestingController): Promise<ReturnType<HttpTestingController['expectOne']>> =>
   vi.waitFor(() => http.expectOne(URL));
 
@@ -53,18 +51,17 @@ describe('OutboxSyncService', () => {
     http.expectNone(URL);
 
     network.online.set(true);
-    TestBed.tick(); // the `online` effect triggers a flush
+    TestBed.tick();
     (await nextRequest(http)).flush({});
 
     await vi.waitFor(() => expect(sync.status()).toBe('synced'));
   });
 
   it('stage() stores without sending; deliver() sends the latest staged snapshot', async () => {
-    // Start offline: an online service flushes on start-up by itself, which would race with this test.
     const {http, network, sync} = setup(false);
 
     await sync.stage(request(1));
-    await sync.stage(request(2)); // replaces the first — only the latest cart state matters
+    await sync.stage(request(2));
     http.expectNone(URL);
     expect(sync.status()).toBe('pending');
 
@@ -79,7 +76,6 @@ describe('OutboxSyncService', () => {
   });
 
   it('a failed request stays queued and counts the attempt', async () => {
-    // Start offline so exactly one flush happens: the one triggered by the connection coming back.
     const {http, network, sync} = setup(false);
     await sync.enqueue(request(1));
 

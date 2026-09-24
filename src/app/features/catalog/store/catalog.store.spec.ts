@@ -27,7 +27,6 @@ const data = (source: 'cache' | 'network', ids: number[], price = 10): CatalogPa
   type: 'data',
 });
 
-/** `connectQuery` is a signalMethod: it reacts to the signal inside the store's injection context. */
 function connect(store: Store, initial: CatalogQuery): ReturnType<typeof signal<CatalogQuery>> {
   const current = signal(initial);
   store.connectQuery(current);
@@ -62,7 +61,6 @@ describe('CatalogStore (SignalStore)', () => {
     TestBed.tick();
 
     await vi.waitFor(() => expect(store.pageIds()).toEqual([200]));
-    // Give the cancelled page-1 response time to arrive: it must never overwrite page 2.
     await new Promise((resolve) => setTimeout(resolve, 60));
     expect(store.pageIds()).toEqual([200]);
     expect(store.query().page).toBe(2);
@@ -73,7 +71,7 @@ describe('CatalogStore (SignalStore)', () => {
     const store = setup({getPage});
 
     const current = connect(store, query());
-    current.set({...query()}); // same key, new object — e.g. coming back from a product page
+    current.set({...query()});
     TestBed.tick();
     expect(getPage).toHaveBeenCalledTimes(1);
 
@@ -137,7 +135,6 @@ describe('CatalogStore (SignalStore)', () => {
     const store = TestBed.inject(CatalogStore);
     const watcher = setInterval(() => statuses.push(store.status()), 1);
 
-    // The build-time data is replaced by fresh data without ever showing a skeleton.
     await vi.waitFor(() => expect(store.pageIds()).toEqual([1, 2]));
     clearInterval(watcher);
     expect(getPage).toHaveBeenCalledTimes(1);

@@ -34,7 +34,6 @@ export const categoriesResponseSchema = v.array(
   ])
 );
 
-/** Fields the UI actually needs. dummyjson returns about 25 fields per product — we ask for eight. */
 export const PRODUCT_FIELDS = [
   'title',
   'description',

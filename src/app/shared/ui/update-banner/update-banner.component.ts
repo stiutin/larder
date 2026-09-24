@@ -3,10 +3,6 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {SwUpdate, VersionReadyEvent} from '@angular/service-worker';
 import {filter} from 'rxjs';
 
-/**
- * The Service Worker quietly downloaded a new version — we offer a reload rather than forcing one.
- * Plain buttons, no Material: the banner lives in the root and MatButton would pull ~50 kB into the initial bundle.
- */
 @Component({
   selector: 'app-update-banner',
   templateUrl: './update-banner.component.html',

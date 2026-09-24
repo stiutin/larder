@@ -3,7 +3,7 @@
     <p class="eyebrow">Contact</p>
     <h1 class="contact__title">Say hello</h1>
     <p class="contact__lead">
-      Questions, ideas or a bug you spotted — write to us. The form works even without a connection.
+      Questions, ideas or a bug you spotted - write to us. The form works even without a connection.
     </p>
   </header>
 
@@ -15,9 +15,9 @@
         @switch (state()) {
           @case ('sent') {
             <div class="result result--sent">
-              <p class="result__title">Thanks — your message is on its way.</p>
+              <p class="result__title">Thanks - your message is on its way.</p>
               <p>
-                It reached our demo endpoint. Nobody reads it yet — the real inbox arrives with the Nest.js backend.
+                It reached our demo endpoint. Nobody reads it yet - the real inbox arrives with the Nest.js backend.
               </p>
               <button (click)="startOver()" mat-stroked-button type="button">Write another message</button>
             </div>
@@ -30,7 +30,7 @@
             </div>
           }
           @case ('error') {
-            <p class="result result--error">Something went wrong. Your text is still in the form — please try again.</p>
+            <p class="result result--error">Something went wrong. Your text is still in the form - please try again.</p>
           }
         }
       </div>
@@ -121,7 +121,7 @@
             <a [href]="githubUrl" rel="noopener" target="_blank">{{ githubHandle }}</a>
           </dd>
           <dt>Bugs and ideas</dt>
-          <dd>Open an issue in the project repository — that is the fastest way to reach the author.</dd>
+          <dd>Open an issue in the project repository - that is the fastest way to reach the author.</dd>
           <dt>Replies</dt>
           <dd>The form is a demo: messages reach a mock endpoint and nobody reads them yet.</dd>
         </dl>

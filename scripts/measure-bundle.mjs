@@ -1,13 +1,3 @@
-#!/usr/bin/env node
-/**
- * Measures the built bundle: raw / gzip / brotli.
- *
- *   npm run measure:bundle              # print the table
- *   npm run measure:bundle -- --json    # also write dist/larder/bundle-report.json
- *
- * Run after a build. Sizes are decimal kB, like the Angular CLI prints them.
- */
-
 import {existsSync, readdirSync, readFileSync, statSync, writeFileSync} from 'node:fs';
 import {join, extname, basename} from 'node:path';
 import {gzipSync, brotliCompressSync, constants} from 'node:zlib';
@@ -22,14 +12,7 @@ if (!existsSync(DIST)) {
 
 const gzip = (buf) => gzipSync(buf, {level: 9}).length;
 const brotli = (buf) => brotliCompressSync(buf, {params: {[constants.BROTLI_PARAM_QUALITY]: 11}}).length;
-
-/**
- * Angular appends a hash to file names. For main/styles/polyfills it is stripped so rows line up across runs.
- * Chunks keep the hash: without it they would all collapse into a single `chunk.js`.
- */
 const stableName = (name) => name.replace(/^(main|styles|polyfills)-[A-Za-z0-9_]{8}(?=\.[a-z]+$)/, '$1');
-
-/** The Service Worker is a separate file loaded in the background; it is not part of the app bundle. */
 const SERVICE_WORKER_FILES = new Set(['ngsw-worker.js', 'safety-worker.js', 'worker-basic.min.js', 'sw-sync.js']);
 
 const files = readdirSync(DIST)
@@ -46,11 +29,6 @@ const files = readdirSync(DIST)
   })
   .sort((a, b) => b.raw - a.raw);
 
-/**
- * Initial files are the ones index.html references (script, stylesheet, modulepreload).
- * A `chunk-*` name guarantees nothing: esbuild moves shared vendor code into a chunk that is initial too.
- */
-// With SSR the client template is index.csr.html, without SSR it is index.html.
 const indexFile = ['index.csr.html', 'index.html'].map((name) => join(DIST, name)).find((path) => existsSync(path));
 const indexHtml = indexFile ? readFileSync(indexFile, 'utf8') : '';
 const initialNames = new Set(
@@ -70,7 +48,6 @@ const lazyFiles = files.filter((f) => isLazy(f.file));
 const total = sum(initialFiles);
 const lazyTotal = sum(lazyFiles);
 
-/** Angular CLI prints decimal kB (÷1000) — use the same unit so the numbers match. */
 const kb = (n) => `${(n / 1000).toFixed(2)} kB`;
 const pad = (s, n) => String(s).padEnd(n);
 

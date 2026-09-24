@@ -1,9 +1,5 @@
 export type ApiErrorKind = 'client' | 'offline' | 'parse' | 'server';
 
-/**
- * Domain error. Components should not know about HttpErrorResponse
- * or inspect status codes — `kind` is all they need.
- */
 export class ApiError extends Error {
   public readonly kind: ApiErrorKind;
   public readonly status: number | null;

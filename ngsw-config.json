@@ -6,13 +6,7 @@
       "name": "app-shell",
       "installMode": "prefetch",
       "resources": {
-        "files": [
-          "/favicon.ico",
-          "/index.csr.html",
-          "/manifest.webmanifest",
-          "/*.css",
-          "/*.js"
-        ]
+        "files": ["/favicon.ico", "/index.csr.html", "/manifest.webmanifest", "/*.css", "/*.js"]
       }
     },
     {
@@ -20,10 +14,7 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
-        "files": [
-          "/assets/**",
-          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
-        ]
+        "files": ["/assets/**", "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"]
       }
     },
     {
@@ -31,19 +22,14 @@
       "installMode": "lazy",
       "updateMode": "lazy",
       "resources": {
-        "urls": [
-          "https://fonts.googleapis.com/**",
-          "https://fonts.gstatic.com/**"
-        ]
+        "urls": ["https://fonts.googleapis.com/**", "https://fonts.gstatic.com/**"]
       }
     }
   ],
   "dataGroups": [
     {
       "name": "product-images",
-      "urls": [
-        "https://cdn.dummyjson.com/**"
-      ],
+      "urls": ["https://cdn.dummyjson.com/**"],
       "cacheConfig": {
         "strategy": "performance",
         "maxSize": 500,
@@ -51,11 +37,6 @@
       }
     }
   ],
-  "navigationUrls": [
-    "/**",
-    "!/**/*.*",
-    "!/**/*__*",
-    "!/**/*__*/**"
-  ],
+  "navigationUrls": ["/**", "!/**/*.*", "!/**/*__*", "!/**/*__*/**"],
   "navigationRequestStrategy": "freshness"
 }

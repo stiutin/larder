@@ -6,11 +6,6 @@ const STORAGE_KEY = 'larder-theme';
 const NEXT: Record<ThemePreference, ThemePreference> = {dark: 'system', light: 'dark', system: 'light'};
 const LABELS: Record<ThemePreference, string> = {dark: 'Dark', light: 'Light', system: 'System'};
 
-/**
- * Three states: system → light → dark. The choice is stored in localStorage.
- * The server cannot know the choice, so until the first client render the button shows "system",
- * while an inline script in index.html sets the theme attribute itself — no flash.
- */
 @Component({
   selector: 'app-theme-toggle',
   templateUrl: './theme-toggle.component.html',

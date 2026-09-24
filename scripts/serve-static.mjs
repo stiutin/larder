@@ -1,10 +1,3 @@
-/**
- * Serves the build the way GitHub Pages does, so tests and audits hit exactly what gets deployed:
- * files as they are, `dir/` → `dir/index.html`, `/dir` → 301 to `/dir/`, anything else → `404.html` with status 404.
- *
- *   npm run serve                          # http://localhost:4000/
- *   BASE_HREF=/larder/ npm run serve       # http://localhost:4000/larder/ — matches a project site
- */
 import {createReadStream, existsSync, statSync} from 'node:fs';
 import {createServer} from 'node:http';
 import {extname, join, normalize, resolve} from 'node:path';

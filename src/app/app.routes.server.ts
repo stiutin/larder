@@ -3,15 +3,6 @@ import {PrerenderFallback, RenderMode, ServerRoute} from '@angular/ssr';
 
 import {API_URL} from './core/http/api.config';
 
-/**
- * Everything is prerendered at build time: the site is deployed to GitHub Pages, which only serves files.
- *
- * - `''`, `about`, `contact`, `cart` — one HTML file each. Query variants of the catalogue (`?page=2`) get the
- *   same file; the client store follows the URL and loads the right page after hydration.
- * - `product/:id` — one file per product, ids fetched from the API during the build.
- * - `**` — client-rendered: GitHub Pages serves `404.html` (the client shell) for unknown paths,
- *   and the router shows the not-found page or any product added after the last build.
- */
 export const serverRoutes: ServerRoute[] = [
   {path: '', renderMode: RenderMode.Prerender},
   {path: 'about', renderMode: RenderMode.Prerender},

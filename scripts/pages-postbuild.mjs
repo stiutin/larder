@@ -1,11 +1,3 @@
-/**
- * Turns the static build into a GitHub Pages site. Runs after every `ng build`.
- *
- * - `404.html`  — GitHub Pages serves it for any unknown path. It is the client shell (`index.csr.html`), so the
- *                 router can render the not-found page, or a product added after the last build.
- * - `.nojekyll` — serve files as they are, without Jekyll processing.
- * - `build-info.json` — how this build was made (API, base href), so tooling can tell a test build from a real one.
- */
 import {copyFileSync, existsSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 
@@ -13,7 +5,7 @@ const BROWSER = join('dist', 'larder', 'browser');
 const shell = join(BROWSER, 'index.csr.html');
 
 if (!existsSync(shell)) {
-  console.error(`✘ ${shell} not found — is outputMode "static" with a client-rendered route?`);
+  console.error(`✘ ${shell} not found - is outputMode "static" with a client-rendered route?`);
   process.exit(1);
 }
 

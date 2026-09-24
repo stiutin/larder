@@ -4,7 +4,6 @@ import * as v from 'valibot';
 import {isOfflineDbSupported, openOfflineDb} from '../../../core/offline/offline-db';
 import {CartItem} from '../../../shared/model/cart.model';
 
-/** The persisted cart is validated too: data from an older app version must not break the new one. */
 const persistedItemsSchema = v.array(
   v.object({
     addedAt: v.number(),
@@ -44,7 +43,7 @@ export class CartStorage {
     try {
       await (await openOfflineDb()).put('cart', {id: 'cart', items, updatedAt: Date.now()});
     } catch {
-      // The cart stays in memory until reload — better than crashing.
+      // The cart stays in memory until reload - better than crashing.
     }
   }
 }

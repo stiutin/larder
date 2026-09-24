@@ -23,20 +23,16 @@ export const appConfig: ApplicationConfig = {
       routes,
       withComponentInputBinding(),
       withViewTransitions(),
-      // Next catalog page scrolls to the top; Back restores the previous position.
       withInMemoryScrolling({scrollPositionRestoration: 'enabled'})
     ),
     provideHttpClient(withFetch(), withInterceptors([apiErrorInterceptor])),
     {provide: API_URL, useValue: 'https://dummyjson.com'},
     {provide: ErrorHandler, useClass: GlobalErrorHandler},
     {provide: TitleStrategy, useClass: AppTitleStrategy},
-    // `sw-sync.js` imports the standard ngsw-worker and adds a Background Sync handler.
     provideServiceWorker('sw-sync.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
-    // Hydration instead of re-rendering; clicks and typing before the JS loads are replayed afterwards.
-    // The client does not re-request server GETs — the HTTP transfer cache is on by default.
     provideClientHydration(withEventReplay()),
   ],
 };

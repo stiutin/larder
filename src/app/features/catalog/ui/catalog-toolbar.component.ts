@@ -47,10 +47,6 @@ export class CatalogToolbarComponent {
   public readonly categoryChange = output<string | null>();
   public readonly sortChange = output<CatalogSort>();
 
-  /**
-   * The search field is a `linkedSignal`: the user types freely, but when the URL changes externally
-   * (Back button, reset filters) the value re-syncs on its own.
-   */
   protected readonly searchTerm = linkedSignal(() => this.query().search);
   protected readonly sorts = CATALOG_SORTS;
   protected readonly sortLabels = SORT_LABELS;
@@ -60,17 +56,6 @@ export class CatalogToolbarComponent {
   private readonly sortField = viewChild.required<ElementRef<HTMLSelectElement>>('sortField');
 
   constructor() {
-    /*
-     * The fields are uncontrolled on purpose: values are rendered as attributes (`[attr.value]`,
-     * `[attr.selected]`). A property binding would be re-applied during hydration and wipe whatever the user
-     * typed before the JavaScript arrived — and the replayed input event would then read an empty field.
-     * External URL changes (Back, "clear filters") are pushed into the fields here, skipping the first run.
-     */
-    /*
-     * After hydration, adopt whatever the fields already hold. Normally replayed events deliver early typing,
-     * but not every early change produces one — browser autofill, form restoration, or input that raced the
-     * hand-over from the pre-hydration event contract. The fields keep their values (attribute bindings), so read them.
-     */
     afterNextRender(() => {
       const query = this.query();
       const typed = this.searchField().nativeElement.value;
@@ -85,7 +70,6 @@ export class CatalogToolbarComponent {
         this.sortChange.emit(sort as CatalogSort);
       }
 
-      // Only when the options are rendered: before categories load, the select can only say "All categories".
       const categoryField = this.categoryField().nativeElement;
       const category = categoryField.value || null;
 

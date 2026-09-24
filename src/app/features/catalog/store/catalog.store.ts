@@ -25,25 +25,16 @@ import {CatalogStatus, initialCatalogState} from './catalog.state';
 import {CATALOG_TRANSFER_KEY} from './catalog-transfer';
 
 interface PageRequest {
-  /** `true` for an explicit retry: reload even if this query is already on screen. */
   force: boolean;
   query: CatalogQuery;
-  /** Refresh in the background: keep the current page on screen instead of showing the loading state. */
   silent?: boolean;
 }
 
-/** Statuses in which the current page is on screen and does not need to be fetched again. */
 const ON_SCREEN: ReadonlySet<CatalogStatus> = new Set(['loaded', 'revalidating', 'stale']);
 
 const toApiError = (error: unknown): ApiError =>
   error instanceof ApiError ? error : new ApiError('client', String(error));
 
-/**
- * Catalogue state: one SignalStore instead of actions, reducer, effects and selectors.
- *
- * Provided at the lazy catalogue route, so it — and the whole data layer behind it — stays out of the initial bundle.
- * Page requests go through one stream with `switchMap`: a newer query (typing, paging, sorting) cancels the older one.
- */
 export const CatalogStore = signalStore(
   withEntities<Product>(),
   withState(initialCatalogState),
@@ -64,7 +55,6 @@ export const CatalogStore = signalStore(
   withMethods((store) => {
     const applyEvent = (event: CatalogPageEvent): void => {
       if (event.type === 'revalidate-failed') {
-        // The cached page stays on screen; the UI says how old it is.
         patchState(store, {error: event.error, status: 'stale'});
 
         return;
@@ -84,7 +74,6 @@ export const CatalogStore = signalStore(
       catalogQueryKey(store.query()) === catalogQueryKey(query) && ON_SCREEN.has(store.status());
 
     return {
-      /** The single page-loading pipeline. Started once from `onInit`. */
       _loadPages: rxMethod<PageRequest>(
         pipe(
           // Coming back from a product page must not reload a list that is already shown.
@@ -107,7 +96,6 @@ export const CatalogStore = signalStore(
         )
       ),
 
-      /** Binds the store to a query signal (the URL). Every change of the signal requests a page. */
       connectQuery: signalMethod<CatalogQuery>((query) => store._requests$.next({force: false, query})),
 
       retry(): void {
@@ -119,7 +107,6 @@ export const CatalogStore = signalStore(
           exhaustMap(() =>
             store._repository.getCategories().pipe(
               tap((categories) => patchState(store, {categories})),
-              // Without categories the catalogue still works — the filter just does not appear.
               catchError(() => EMPTY)
             )
           )
@@ -141,7 +128,6 @@ export const CatalogStore = signalStore(
         store._loadPages(store._requests$);
 
         if (isServer) {
-          // Hand the loaded state to the client (see catalog-transfer.ts).
           watchState(store, (state) => {
             if (state.status === 'loaded') {
               transferState.set(CATALOG_TRANSFER_KEY, {...getState(store), error: null});
@@ -161,7 +147,6 @@ export const CatalogStore = signalStore(
             {products: store.pageProducts(), total: snapshot.total},
             snapshot.fetchedAt ?? Date.now()
           );
-          // The snapshot was taken at build time (the site is prerendered), so refresh it quietly.
           store._requests$.next({force: true, query: snapshot.query, silent: true});
         }
       },

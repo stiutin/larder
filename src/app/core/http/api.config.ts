@@ -10,8 +10,4 @@ export const API_ENDPOINTS = {
   product: (id: number): string => `products/${id}`,
 } as const;
 
-/**
- * Public origin of the site, e.g. `https://larder.example`. Set on the server from `PUBLIC_URL` so that
- * Open Graph images and `og:url` are absolute — link previews ignore relative URLs.
- */
 export const SITE_URL = new InjectionToken<string>('SITE_URL');
